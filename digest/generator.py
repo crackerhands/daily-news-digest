@@ -1,5 +1,6 @@
 import json
 import re
+import time
 from typing import Any, Dict, List
 
 import anthropic
@@ -109,12 +110,21 @@ def generate_digest(
     messages.append({"role": "assistant", "content": search_response.content})
     messages.append({"role": "user", "content": _build_format_prompt(watchlist_str)})
 
-    format_response = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=MAX_TOKENS_FORMAT,
-        system=SYSTEM_PROMPT,
-        messages=messages,
-    )
+    for attempt in range(3):
+        try:
+            format_response = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=MAX_TOKENS_FORMAT,
+                system=SYSTEM_PROMPT,
+                messages=messages,
+            )
+            break
+        except anthropic.RateLimitError:
+            if attempt == 2:
+                raise
+            wait = 60 * (attempt + 1)
+            print(f"Rate limited, retrying in {wait}s...")
+            time.sleep(wait)
 
     text_blocks = [block for block in format_response.content if block.type == "text"]
     if not text_blocks:
