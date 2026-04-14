@@ -1,0 +1,11 @@
+{
+  "votes": {
+    "football": {"up": 0, "down": 0},
+    "nfl": {"up": 0, "down": 0},
+    "politics": {"up": 0, "down": 0},
+    "investing": {"up": 0, "down": 0},
+    "tech": {"up": 0, "down": 0},
+    "claude": {"up": 0, "down": 0},
+    "data_engineering": {"up": 0, "down": 0}
+  }
+}

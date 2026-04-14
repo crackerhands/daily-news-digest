@@ -1,0 +1,16 @@
+{
+  "email": {
+    "address": "YOUR_GMAIL_ADDRESS@gmail.com"
+  },
+  "watchlist": ["ATZ.TO"],
+  "topics": {
+    "football": true,
+    "nfl": true,
+    "politics": true,
+    "investing": true,
+    "tech": true,
+    "claude": true,
+    "data_engineering": true
+  },
+  "nfl_offseason": true
+}
