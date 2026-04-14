@@ -1,0 +1,28 @@
+name: Daily News Digest
+
+on:
+  schedule:
+    - cron: "0 15 * * *"  # 8am PDT (UTC-7). Change to 0 16 * * * in PST (Nov-Mar)
+  workflow_dispatch:        # Allow manual trigger for testing
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run digest
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python main.py
