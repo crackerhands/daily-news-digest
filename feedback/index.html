@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digest Feedback</title>
+  <style>
+    body {
+      font-family: -apple-system, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 400px;
+    }
+    #status { font-size: 18px; color: #333; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 style="font-size:24px;">Daily Digest</h1>
+    <div id="status">Processing vote...</div>
+  </div>
+  <!-- Replace YOUR_FINE_GRAINED_PAT_HERE with your GitHub fine-grained PAT (actions:write only) -->
+  <script>window.__VOTE_TOKEN__ = "YOUR_FINE_GRAINED_PAT_HERE";</script>
+  <script src="vote.js"></script>
+</body>
+</html>
