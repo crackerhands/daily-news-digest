@@ -51,7 +51,6 @@ SAMPLE_DIGEST = {
 }
 
 DATE = "2026-04-13"
-FEEDBACK_BASE = "https://crackerhands.github.io/daily-news-digest"
 
 
 def test_build_email_returns_mime_message():
@@ -60,7 +59,6 @@ def test_build_email_returns_mime_message():
         from_addr="test@gmail.com",
         to_addr="test@gmail.com",
         date=DATE,
-        feedback_base_url=FEEDBACK_BASE,
     )
     assert msg["Subject"] == f"Daily Digest — {DATE}"
     assert msg["From"] == "test@gmail.com"
@@ -73,7 +71,6 @@ def test_build_email_contains_amp_part():
         from_addr="test@gmail.com",
         to_addr="test@gmail.com",
         date=DATE,
-        feedback_base_url=FEEDBACK_BASE,
     )
     content_types = [part.get_content_type() for part in msg.walk()]
     assert "text/x-amp-html" in content_types
@@ -85,26 +82,22 @@ def test_build_email_contains_html_fallback():
         from_addr="test@gmail.com",
         to_addr="test@gmail.com",
         date=DATE,
-        feedback_base_url=FEEDBACK_BASE,
     )
     content_types = [part.get_content_type() for part in msg.walk()]
     assert "text/html" in content_types
 
 
-def test_amp_part_contains_summary_and_feedback_buttons():
+def test_amp_part_contains_summary():
     msg = build_email(
         digest=SAMPLE_DIGEST,
         from_addr="test@gmail.com",
         to_addr="test@gmail.com",
         date=DATE,
-        feedback_base_url=FEEDBACK_BASE,
     )
     for part in msg.walk():
         if part.get_content_type() == "text/x-amp-html":
             body = part.get_payload(decode=True).decode()
             assert "Fulham beat Chelsea 2-0." in body
-            assert "vote=up" in body
-            assert "vote=down" in body
             break
     else:
         pytest.fail("No AMP part found")
@@ -116,7 +109,6 @@ def test_politics_section_has_framing_in_amp():
         from_addr="test@gmail.com",
         to_addr="test@gmail.com",
         date=DATE,
-        feedback_base_url=FEEDBACK_BASE,
     )
     for part in msg.walk():
         if part.get_content_type() == "text/x-amp-html":

@@ -8,9 +8,6 @@ from digest.email_builder import build_email
 from digest.feedback import load_prompt_modifier
 from digest.generator import generate_digest
 
-FEEDBACK_BASE_URL = "https://crackerhands.github.io/daily-news-digest"
-
-
 def send_email(msg: MIMEMultipart, from_addr: str, app_password: str) -> None:
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
@@ -39,7 +36,6 @@ def main() -> None:
         from_addr=config.email_address,
         to_addr=config.email_address,
         date=today,
-        feedback_base_url=FEEDBACK_BASE_URL,
     )
 
     print("Sending email...")
