@@ -28,7 +28,7 @@ def _build_amp_standard_section(key: str, section: Dict, date: str) -> str:
   <div style="margin-bottom:24px;border-bottom:1px solid #eee;padding-bottom:16px;">
     <h2 style="font-size:18px;margin-bottom:8px;">{label}</h2>
     <p>{summary}</p>
-    <amp-accordion animate>
+    <amp-accordion>
       <section>
         <h3 style="font-size:14px;color:#555;">Read more &darr;</h3>
         <div style="padding:8px 0;">{deep}</div>
@@ -50,7 +50,7 @@ def _build_amp_politics_section(section: Dict) -> str:
       <h3 style="font-size:15px;">{headline}</h3>
       <p>{summary}</p>
       <p><strong>Impact:</strong> {impact}</p>
-      <amp-accordion animate>
+      <amp-accordion>
         <section>
           <h4 style="font-size:13px;color:#1a73e8;">Liberal framing &darr;</h4>
           <div style="padding:8px;background:#f0f4ff;">{left}</div>
@@ -82,7 +82,7 @@ def _build_amp_body(digest: Dict, date: str) -> str:
             sections_html += _build_amp_standard_section(key, section, date)
 
     return f"""<!doctype html>
-<html ⚡4email data-css-strict>
+<html ⚡4email>
 <head>
   <meta charset="utf-8">
   <style amp4email-boilerplate>body{{visibility:hidden}}</style>
