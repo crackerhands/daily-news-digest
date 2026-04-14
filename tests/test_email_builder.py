@@ -1,52 +1,24 @@
-import pytest
 from digest.email_builder import build_email
-
 
 SAMPLE_DIGEST = {
     "teaser_headline": "Fulham clinch Europa League spot",
     "sections": {
-        "football": {
-            "summary": "Fulham beat Chelsea 2-0.",
-            "deep": "Full match report.",
-            "feedback_topic": "football"
-        },
-        "nfl": {
-            "summary": "Jaguars sign QB.",
-            "deep": "Full details.",
-            "feedback_topic": "nfl"
-        },
+        "football": {"summary": "Fulham beat Chelsea 2-0.", "deep": "Full match report.", "feedback_topic": "football"},
+        "nfl": {"summary": "Jaguars sign QB.", "deep": "Full details.", "feedback_topic": "nfl"},
         "politics": {
-            "stories": [
-                {
-                    "headline": "Budget passed",
-                    "summary": "Parliament passed budget.",
-                    "left_framing": "Historic investment.",
-                    "right_framing": "Reckless spending.",
-                    "impact": "Taxes rise slightly."
-                }
-            ],
+            "stories": [{
+                "headline": "Budget passed",
+                "summary": "Parliament passed budget.",
+                "left_framing": "Historic investment.",
+                "right_framing": "Reckless spending.",
+                "impact": "Taxes rise slightly."
+            }],
             "feedback_topic": "politics"
         },
-        "investing": {
-            "summary": "ATZ.TO up 3%.",
-            "deep": "Strong earnings.",
-            "feedback_topic": "investing"
-        },
-        "tech": {
-            "summary": "GPT-5 released.",
-            "deep": "Full breakdown.",
-            "feedback_topic": "tech"
-        },
-        "claude": {
-            "summary": "New MCP server released.",
-            "deep": "Full details.",
-            "feedback_topic": "claude"
-        },
-        "data_engineering": {
-            "summary": "dbt 2.0 released.",
-            "deep": "Full changelog.",
-            "feedback_topic": "data_engineering"
-        }
+        "investing": {"summary": "ATZ.TO up 3%.", "deep": "Strong earnings.", "feedback_topic": "investing"},
+        "tech": {"summary": "GPT-5 released.", "deep": "Full breakdown.", "feedback_topic": "tech"},
+        "claude": {"summary": "New MCP server released.", "deep": "Full details.", "feedback_topic": "claude"},
+        "data_engineering": {"summary": "dbt 2.0 released.", "deep": "Full changelog.", "feedback_topic": "data_engineering"},
     }
 }
 
@@ -54,65 +26,34 @@ DATE = "2026-04-13"
 
 
 def test_build_email_returns_mime_message():
-    msg = build_email(
-        digest=SAMPLE_DIGEST,
-        from_addr="test@gmail.com",
-        to_addr="test@gmail.com",
-        date=DATE,
-    )
-    assert msg["Subject"] == f"Daily Digest — {DATE}"
+    msg = build_email(digest=SAMPLE_DIGEST, from_addr="test@gmail.com", to_addr="test@gmail.com", date=DATE)
+    assert msg["Subject"] == f"Daily Digest \u2014 {DATE}"
     assert msg["From"] == "test@gmail.com"
     assert msg["To"] == "test@gmail.com"
 
 
-def test_build_email_contains_amp_part():
-    msg = build_email(
-        digest=SAMPLE_DIGEST,
-        from_addr="test@gmail.com",
-        to_addr="test@gmail.com",
-        date=DATE,
-    )
-    content_types = [part.get_content_type() for part in msg.walk()]
-    assert "text/x-amp-html" in content_types
-
-
-def test_build_email_contains_html_fallback():
-    msg = build_email(
-        digest=SAMPLE_DIGEST,
-        from_addr="test@gmail.com",
-        to_addr="test@gmail.com",
-        date=DATE,
-    )
+def test_build_email_contains_html_part():
+    msg = build_email(digest=SAMPLE_DIGEST, from_addr="test@gmail.com", to_addr="test@gmail.com", date=DATE)
     content_types = [part.get_content_type() for part in msg.walk()]
     assert "text/html" in content_types
 
 
-def test_amp_part_contains_summary():
-    msg = build_email(
-        digest=SAMPLE_DIGEST,
-        from_addr="test@gmail.com",
-        to_addr="test@gmail.com",
-        date=DATE,
-    )
+def test_html_contains_summary():
+    msg = build_email(digest=SAMPLE_DIGEST, from_addr="test@gmail.com", to_addr="test@gmail.com", date=DATE)
     for part in msg.walk():
-        if part.get_content_type() == "text/x-amp-html":
+        if part.get_content_type() == "text/html":
             body = part.get_payload(decode=True).decode()
             assert "Fulham beat Chelsea 2-0." in body
+            assert "Fulham clinch Europa League spot" in body
             break
-    else:
-        pytest.fail("No AMP part found")
 
 
-def test_politics_section_has_framing_in_amp():
-    msg = build_email(
-        digest=SAMPLE_DIGEST,
-        from_addr="test@gmail.com",
-        to_addr="test@gmail.com",
-        date=DATE,
-    )
+def test_politics_section_has_framing():
+    msg = build_email(digest=SAMPLE_DIGEST, from_addr="test@gmail.com", to_addr="test@gmail.com", date=DATE)
     for part in msg.walk():
-        if part.get_content_type() == "text/x-amp-html":
+        if part.get_content_type() == "text/html":
             body = part.get_payload(decode=True).decode()
             assert "Historic investment." in body
             assert "Reckless spending." in body
+            assert "Taxes rise slightly." in body
             break
