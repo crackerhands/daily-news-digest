@@ -4,7 +4,8 @@ from typing import Any, Dict, List
 
 import anthropic
 
-MAX_TOKENS = 4000  # Hard cap per run to control cost
+MAX_TOKENS_SEARCH = 4000   # Cap for web search turn
+MAX_TOKENS_FORMAT = 8000   # Cap for JSON formatting turn
 
 SYSTEM_PROMPT = """You are a daily news digest assistant. Search the web for today's top stories across the requested topic areas."""
 
@@ -98,7 +99,7 @@ def generate_digest(
     messages = [{"role": "user", "content": _build_search_prompt(watchlist, prompt_modifier, nfl_offseason)}]
     search_response = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=MAX_TOKENS,
+        max_tokens=MAX_TOKENS_SEARCH,
         system=SYSTEM_PROMPT,
         tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 10}],
         messages=messages,
@@ -110,7 +111,7 @@ def generate_digest(
 
     format_response = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=MAX_TOKENS,
+        max_tokens=MAX_TOKENS_FORMAT,
         system=SYSTEM_PROMPT,
         messages=messages,
     )
